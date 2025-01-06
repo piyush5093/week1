@@ -1,46 +1,41 @@
-function calculate(method) {
-  const numberInput = document.getElementById('number').value.trim(); // Get user input
-  const outputDiv = document.getElementById('output'); // Output container
+const thumbnails = document.querySelectorAll('.thumbnail');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.querySelector('.lightbox-image');
+const closeBtn = document.querySelector('.close');
+const nextBtn = document.querySelector('.next');
+const prevBtn = document.querySelector('.prev');
 
-  // Clear previous output
-  outputDiv.innerHTML = "";
+let currentIndex = 0;
 
-  // Validate input
-  const num = parseInt(numberInput);
-  if (isNaN(num) || num < 0) {
-    outputDiv.innerHTML = "<span style='color: #ff6a00;'>Please enter a valid positive integer.</span>";
-    return;
-  }
+// Open Lightbox
+thumbnails.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => {
+        lightbox.classList.add('active');
+        lightboxImage.src = thumb.src;
+        currentIndex = index;
+    });
+});
 
-  // Calculate factorial
-  let result;
-  if (method === 'iterative') {
-    result = factorialIterative(num);
-  } else if (method === 'recursive') {
-    result = factorialRecursive(num);
-  }
+// Close Lightbox
+closeBtn.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+});
 
-  // Display the result
-  outputDiv.innerHTML = `
-    <div class="result-container">
-      <p>The factorial of <strong>${num}</strong> is:</p>
-      <p class="result-value">${result}</p>
-      <p>(Calculated using the <strong>${method.toUpperCase()}</strong> method)</p>
-    </div>
-  `;
-}
+// Navigate Next
+nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % thumbnails.length;
+    lightboxImage.src = thumbnails[currentIndex].src;
+});
 
-// Iterative Factorial Function
-function factorialIterative(n) {
-  let result = 1;
-  for (let i = 1; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
+// Navigate Previous
+prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+    lightboxImage.src = thumbnails[currentIndex].src;
+});
 
-// Recursive Factorial Function
-function factorialRecursive(n) {
-  if (n === 0 || n === 1) return 1;
-  return n * factorialRecursive(n - 1);
-}
+// Close Lightbox on Background Click
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        lightbox.classList.remove('active');
+    }
+});
